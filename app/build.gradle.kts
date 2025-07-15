@@ -95,7 +95,7 @@ dependencies {
 
     implementation(libs.coil.kt.compose)
     implementation(project(":features:user"))
-
+    implementation(project(":core:util"))
 
     ksp(libs.hilt.compiler)
 //

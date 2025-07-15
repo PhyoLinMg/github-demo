@@ -19,10 +19,12 @@ internal fun Project.configureSharedBuildConfig(
         buildTypes {
             getByName("debug") {
                 buildConfigField("String", "GITHUB_TOKEN", "\"${properties.getProperty("GITHUB_TOKEN")}\"")
+                buildConfigField("String", "API_URL","\"https://api.github.com/\"")
 
             }
             getByName("release") {
                 buildConfigField("String", "GITHUB_TOKEN", "\"${properties.getProperty("GITHUB_TOKEN")}\"")
+                buildConfigField("String", "API_URL","\"https://api.github.com/\"")
             }
         }
     }

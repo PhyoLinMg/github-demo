@@ -23,6 +23,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 
 data class User(
@@ -48,10 +49,15 @@ data class Repository(
 @Composable
 fun UserSearchScreen(
     users: List<User>,
+
     searchQuery: String = "",
     onSearchQueryChange: (String) -> Unit = {},
     onUserClick: (User) -> Unit = {},
 ) {
+    val viewModel: UserViewModel = hiltViewModel()
+
+
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -197,41 +203,3 @@ fun UserSearchScreenPreview() {
     )
 }
 
-@Preview(showBackground = true)
-@Composable
-fun UserProfileScreenPreview() {
-    val sampleUser = User(
-        id = 1,
-        name = "Ethan Carter",
-        username = "ethan_carter",
-        avatarUrl = "https://example.com/avatar1.jpg",
-        bio = "Software Engineer",
-        joinedYear = "2018",
-        followers = 12,
-        following = 25,
-        repositories = listOf(
-            Repository(
-                name = "finance-manager",
-                description = "A web application for managing personal finances, including budgeting, expense tracking, and financial goal setting.",
-                language = "JavaScript",
-                stars = 103
-            ),
-            Repository(
-                name = "stock-predictor",
-                description = "A machine learning project for predicting stock prices based on historical data and market trends.",
-                language = "Python",
-                stars = 456
-            ),
-            Repository(
-                name = "fitness-tracker",
-                description = "An Android app for tracking daily fitness activities, including workouts, steps, and calories burned.",
-                language = "Java",
-                stars = 789
-            )
-        )
-    )
-
-    UserProfileScreen(
-        user = sampleUser
-    )
-}
