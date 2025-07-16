@@ -1,5 +1,6 @@
 package dev.linmaung.user.data.source
 
+
 import androidx.paging.PagingSource
 import androidx.paging.PagingSource.LoadResult.Error
 import androidx.paging.PagingSource.LoadResult.Page
@@ -23,7 +24,7 @@ class SearchUsersPagingSource(
         val currentPage= params.key ?: 1
         val result= userRepository.searchUser(query, page = currentPage)
         return when(result){
-            is dev.linmaung.core.util.Result.Success -> {
+            is Result.Success -> {
                 Page(
                     data = result.data,
                     prevKey = if(currentPage == 1) null else currentPage-1,

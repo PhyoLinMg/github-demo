@@ -13,5 +13,7 @@ dependencies {
     implementation(libs.coil.kt.compose)
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.material.iconsExtended)
+
+    implementation(libs.androidx.paging.compose)
 }
 

@@ -36,7 +36,7 @@ class UserRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getProfile(userName: String): Result<User> {
+    override suspend fun getProfile(): Result<User> {
         return try {
             val response = httpClient.get("user").body<UserDto>()
             Result.Success(response.toDomainUser())

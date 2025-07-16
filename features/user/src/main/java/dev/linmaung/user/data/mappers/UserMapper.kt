@@ -11,6 +11,9 @@ fun UserDto.toDomainUser(): User {
          // Provide a default or handle null login
         avatarUrl = this.avatarUrl,
         name = this.login,
+        fullName = this.login,
+        following = this.following,
+        followers = this.followers,
         // Map other relevant fields
     )
 }

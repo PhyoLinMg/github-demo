@@ -43,5 +43,15 @@ data class UserDto(
     @SerialName("url")
     val url: String,
     @SerialName("user_view_type")
-    val userViewType: String
+    val userViewType: String,
+
+    @SerialName("followers")
+    val followers:Int = 0,
+
+    @SerialName("following")
+    val following:Int = 0,
+
+    @SerialName("public_repos")
+    val publicRepos:Int = 0,
+
 )

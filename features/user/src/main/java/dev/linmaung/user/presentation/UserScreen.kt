@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -24,39 +23,23 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImage
-
-data class User(
-    val id: Long,
-    val name: String,
-    val avatarUrl: String,
-    val bio: String,
-    val username: String = "",
-    val joinedYear: String = "",
-    val followers: Int = 0,
-    val following: Int = 0,
-    val repositories: List<Repository> = emptyList()
-)
-
-data class Repository(
-    val name: String,
-    val description: String,
-    val language: String,
-    val stars: Int
-)
+import dev.linmaung.user.domain.model.User
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UserSearchScreen(
-    users: List<User>,
-
-    searchQuery: String = "",
-    onSearchQueryChange: (String) -> Unit = {},
-    onUserClick: (User) -> Unit = {},
+    onUserClick: (String) -> Unit = {},
 ) {
     val viewModel: UserViewModel = hiltViewModel()
+    val searchQuery by viewModel.searchQuery.collectAsStateWithLifecycle()
 
+    val isSearching= searchQuery.isNotBlank()
 
+    val allUsersPagingData = viewModel.allUsersPagingData.collectAsLazyPagingItems()
+    val searchUsersPagingData = viewModel.searchUsersPagingData.collectAsLazyPagingItems()
 
     Column(
         modifier = Modifier
@@ -64,10 +47,11 @@ fun UserSearchScreen(
             .background(Color.Black)
     ) {
         // Search Input
-
         OutlinedTextField(
             value = searchQuery,
-            onValueChange = onSearchQueryChange,
+            onValueChange = {
+                viewModel.setSearchQuery(it)
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
@@ -80,7 +64,7 @@ fun UserSearchScreen(
             },
             trailingIcon = {
                 if (searchQuery.isNotEmpty()) {
-                    IconButton(onClick = { onSearchQueryChange("") },) {
+                    IconButton(onClick = { viewModel.setSearchQuery("") },) {
                         Icon(
                             imageVector = Icons.Default.Clear,
                             contentDescription = "Clear",
@@ -102,11 +86,10 @@ fun UserSearchScreen(
             modifier = Modifier.weight(1f),
             contentPadding = PaddingValues(horizontal = 16.dp)
         ) {
-            items(users) { user ->
-                UserItem(
-                    user = user,
-                    onClick = { onUserClick(user) }
-                )
+            val currentPagingItems = if (isSearching) searchUsersPagingData else allUsersPagingData
+            items(currentPagingItems.itemCount){ index->
+                val user= currentPagingItems[index]
+                if(user!= null) UserItem(user) { }
             }
         }
 
@@ -156,49 +139,9 @@ fun UserItem(
 @Preview(showBackground = true)
 @Composable
 fun UserSearchScreenPreview() {
-    val sampleUsers = listOf(
-        User(
-            id = 1,
-            name = "Ethan Carter",
-            avatarUrl = "https://example.com/avatar1.jpg",
-            bio = "Software Engineer"
-        ),
-        User(
-            id = 2,
-            name = "Sophia Bennett",
-            avatarUrl = "https://example.com/avatar2.jpg",
-            bio = "Product Designer"
-        ),
-        User(
-            id = 3,
-            name = "Liam Harper",
-            avatarUrl = "https://example.com/avatar3.jpg",
-            bio = "Data Scientist"
-        ),
-        User(
-            id = 4,
-            name = "Olivia Foster",
-            avatarUrl = "https://example.com/avatar4.jpg",
-            bio = "Mobile Developer"
-        ),
-        User(
-            id = 5,
-            name = "Noah Parker",
-            avatarUrl = "https://example.com/avatar5.jpg",
-            bio = "Web Developer"
-        ),
-        User(
-            id = 6,
-            name = "Ava Mitchell",
-            avatarUrl = "https://example.com/avatar6.jpg",
-            bio = "UI/UX Designer"
-        )
-    )
+
 
     UserSearchScreen(
-        users = sampleUsers,
-        searchQuery = "",
-        onSearchQueryChange = {},
         onUserClick = {},
     )
 }

@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -34,7 +33,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImage
+import dev.linmaung.core.domain.model.GithubRepo
 
 @Composable
 fun UserProfileComponent(profile: ProfileUiState, onRepoClick: (String) -> Unit) {
@@ -43,7 +44,7 @@ fun UserProfileComponent(profile: ProfileUiState, onRepoClick: (String) -> Unit)
             .fillMaxSize()
             .background(Color.Black)
     ) {
-
+        val list=profile.reposList.collectAsLazyPagingItems()
         // Profile Content
         LazyColumn(
             modifier = Modifier.weight(1f).padding(top = 16.dp),
@@ -53,8 +54,8 @@ fun UserProfileComponent(profile: ProfileUiState, onRepoClick: (String) -> Unit)
             item {
                 // Profile Avatar
                 AsyncImage(
-                    model = profile.userUiState.avatarUrl,
-                    contentDescription = "${profile.userUiState.name}'s avatar",
+                    model = profile.userUiState?.avatarUrl?:"",
+                    contentDescription = "${profile.userUiState?.name}'s avatar",
                     modifier = Modifier
                         .size(120.dp)
                         .clip(CircleShape)
@@ -67,7 +68,7 @@ fun UserProfileComponent(profile: ProfileUiState, onRepoClick: (String) -> Unit)
 
                 // Name
                 Text(
-                    text = profile.userUiState.name,
+                    text = profile.userUiState?.name.orEmpty(),
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.White
@@ -77,7 +78,7 @@ fun UserProfileComponent(profile: ProfileUiState, onRepoClick: (String) -> Unit)
 
                 // Username
                 Text(
-                    text = "@${profile.userUiState.userName}",
+                    text = "@${profile.userUiState?.userName}",
                     fontSize = 16.sp,
                     color = Color.Gray
                 )
@@ -94,7 +95,7 @@ fun UserProfileComponent(profile: ProfileUiState, onRepoClick: (String) -> Unit)
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            text = profile.userUiState.followers.toString(),
+                            text = profile.userUiState?.followers.toString(),
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold,
                             color = Color.White
@@ -110,7 +111,7 @@ fun UserProfileComponent(profile: ProfileUiState, onRepoClick: (String) -> Unit)
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            text = profile.userUiState.following.toString(),
+                            text = profile.userUiState?.following.toString(),
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold,
                             color = Color.White
@@ -137,7 +138,8 @@ fun UserProfileComponent(profile: ProfileUiState, onRepoClick: (String) -> Unit)
                 Spacer(modifier = Modifier.height(16.dp))
             }
 
-            items(profile.reposList) { repository ->
+            items(list.itemCount) { index ->
+                val repository = list[index] ?: return@items
                 RepositoryItem(repository = repository,onRepoClick)
             }
         }
@@ -145,7 +147,7 @@ fun UserProfileComponent(profile: ProfileUiState, onRepoClick: (String) -> Unit)
 }
 
 @Composable
-fun RepositoryItem(repository:  RepoUiState, onClick:(String)-> Unit) {
+fun RepositoryItem(repository:  GithubRepo, onClick:(String)-> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -173,7 +175,7 @@ fun RepositoryItem(repository:  RepoUiState, onClick:(String)-> Unit) {
                 Icon(Icons.Filled.Star, contentDescription = "Stars", tint = Color.Yellow)
 
                 Text(
-                    text = repository.starCount,
+                    text = repository.starCount.toString(),
                     fontSize = 14.sp,
                     color = Color.Gray
                 )
@@ -184,7 +186,7 @@ fun RepositoryItem(repository:  RepoUiState, onClick:(String)-> Unit) {
         Spacer(modifier = Modifier.height(4.dp))
 
         Text(
-            text = repository.description,
+            text = repository.description?:"",
             fontSize = 14.sp,
             color = Color.Gray,
             maxLines = 2,

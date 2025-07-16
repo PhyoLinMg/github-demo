@@ -29,10 +29,10 @@ class UserViewModel @Inject constructor(
     private val _searchQuery= MutableStateFlow("")
     val searchQuery: StateFlow<String> = _searchQuery
 
+
     fun setSearchQuery(query: String){
         _searchQuery.value = query
     }
-
 
 
     val allUsersPagingData: Flow<PagingData<User>> = Pager(
@@ -50,8 +50,8 @@ class UserViewModel @Inject constructor(
         .flatMapLatest { query ->
             Pager(
                 config = PagingConfig(
-                    pageSize = 30,
-                    enablePlaceholders = false
+                    pageSize = 20,
+                    enablePlaceholders = true
                 ),
                 pagingSourceFactory = { SearchUsersPagingSource(userRepository, query) }
             ).flow

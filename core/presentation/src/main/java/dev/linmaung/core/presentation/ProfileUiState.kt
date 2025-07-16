@@ -1,9 +1,14 @@
 package dev.linmaung.core.presentation
 
+import androidx.paging.PagingData
+import dev.linmaung.core.domain.model.GithubRepo
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
+
 data class ProfileUiState(
     val isLoading: Boolean= false,
-    val userUiState: UserUiState,
-    val reposList: List<RepoUiState> = emptyList(),
+    val userUiState: UserUiState?=null,
+    val reposList: Flow<PagingData<GithubRepo>> = flowOf()
 )
 
 data class UserUiState(
@@ -13,12 +18,4 @@ data class UserUiState(
     val fullName:String,
     val followers: Int,
     val following: Int,
-)
-
-data class RepoUiState(
-    val name:String,
-    val language:String,
-    val repoUrl:String,
-    val starCount: String,
-    val description: String
 )
