@@ -26,9 +26,6 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
 }
 
-
-
-
 android {
     defaultConfig {
         applicationId = "dev.linmaung.github"
@@ -95,6 +92,7 @@ dependencies {
 
     implementation(libs.coil.kt.compose)
     implementation(project(":features:user"))
+    implementation(project(":features:repo"))
     implementation(project(":core:util"))
 
     ksp(libs.hilt.compiler)

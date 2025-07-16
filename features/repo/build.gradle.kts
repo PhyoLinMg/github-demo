@@ -1,43 +1,23 @@
 plugins {
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.github.android.feature)
+    alias(libs.plugins.github.android.library.compose)
 }
 
 android {
-    namespace = "dev.linmaung.repo"
-    compileSdk = 36
-
-    defaultConfig {
-        minSdk = 24
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles("consumer-rules.pro")
-    }
-
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
-    kotlinOptions {
-        jvmTarget = "11"
-    }
+    namespace = "dev.linmaung.github.repo"
 }
+dependencies{
 
-dependencies {
+    implementation(project(":network"))
+    implementation(libs.androidx.compose.foundation)
+    implementation(libs.coil.kt.compose)
+    implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.compose.material.iconsExtended)
 
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.material)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
+    implementation(libs.androidx.paging.compose)
+    implementation(project(":core:util"))
+    implementation(project(":core:presentation"))
+    implementation(project(":core:data"))
+    implementation(project(":core:domain"))
+
 }

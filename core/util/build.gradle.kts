@@ -1,6 +1,8 @@
 plugins {
-    id("java-library")
-    alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.github.android.library)
+}
+android {
+    namespace="dev.linmaung.core.util"
 }
 java {
     sourceCompatibility = JavaVersion.VERSION_11
@@ -13,4 +15,5 @@ kotlin {
 }
 dependencies{
     implementation(libs.bundles.coroutines)
+
 }

@@ -19,11 +19,13 @@ import com.android.build.gradle.LibraryExtension
 import com.google.samples.apps.nowinandroid.configureFlavors
 import com.google.samples.apps.nowinandroid.configureKotlinAndroid
 import com.google.samples.apps.nowinandroid.configureSharedBuildConfig
+import com.google.samples.apps.nowinandroid.libs
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.configure
+import org.gradle.kotlin.dsl.dependencies
 
 
 class AndroidLibraryConventionPlugin : Plugin<Project> {
@@ -31,7 +33,7 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
         with(target) {
             apply(plugin = "com.android.library")
             apply(plugin = "org.jetbrains.kotlin.android")
-
+            apply(plugin = "org.jetbrains.kotlin.plugin.serialization")
 
             extensions.configure<LibraryExtension> {
                 configureKotlinAndroid(this)
@@ -45,6 +47,10 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
                     path.split("""\W""".toRegex()).drop(1).distinct().joinToString(separator = "_")
                         .lowercase() + "_"
             }
+            dependencies{
+                "implementation"(libs.findLibrary("kotlinx.serialization.json").get())
+            }
+
         }
     }
 }

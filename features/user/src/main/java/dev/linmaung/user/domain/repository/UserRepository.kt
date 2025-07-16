@@ -6,5 +6,7 @@ import dev.linmaung.user.domain.model.User
 interface UserRepository {
     suspend fun getUsers(since: Int): Result<List<User>>
 
-    suspend fun searchUser(query: String): Result<List<User>>
+    suspend fun searchUser(query: String,perPage:Int=20, page:Int=1): Result<List<User>>
+
+    suspend fun getProfile(userName: String): Result<User>
 }
