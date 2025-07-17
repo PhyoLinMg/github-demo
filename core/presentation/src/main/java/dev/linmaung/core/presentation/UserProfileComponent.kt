@@ -1,6 +1,7 @@
 package dev.linmaung.core.presentation
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -17,10 +18,11 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -29,7 +31,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -38,121 +42,242 @@ import coil.compose.AsyncImage
 import dev.linmaung.core.domain.model.GithubRepo
 
 @Composable
-fun UserProfileComponent(profile: ProfileUiState, onRepoClick: (String) -> Unit) {
+fun UserProfileComponent(
+    profile: ProfileUiState,
+    modifier: Modifier = Modifier,
+    onRetry: () -> Unit,
+    onRepoClick: (String) -> Unit,
+
+) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(Color.Black)
     ) {
-        val list=profile.reposList.collectAsLazyPagingItems()
-        // Profile Content
-        LazyColumn(
-            modifier = Modifier.weight(1f).padding(top = 16.dp),
-            contentPadding = PaddingValues(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            item {
-                // Profile Avatar
-                AsyncImage(
-                    model = profile.userUiState?.avatarUrl?:"",
-                    contentDescription = "${profile.userUiState?.name}'s avatar",
-                    modifier = Modifier
-                        .size(120.dp)
-                        .clip(CircleShape)
-                        .background(Color(0xFFF0F0F0)),
-                    contentScale = ContentScale.Crop,
-                    fallback = painterResource(android.R.drawable.ic_menu_gallery)
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                // Name
-                Text(
-                    text = profile.userUiState?.name.orEmpty(),
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White
-                )
-
-                Spacer(modifier = Modifier.height(4.dp))
-
-                // Username
-                Text(
-                    text = "@${profile.userUiState?.userName}",
-                    fontSize = 16.sp,
-                    color = Color.Gray
-                )
-
-
-                Spacer(modifier = Modifier.height(24.dp))
-
-                // Followers and Following
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceEvenly
-                ) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(
-                            text = profile.userUiState?.followers.toString(),
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.White
-                        )
-                        Text(
-                            text = "Followers",
-                            fontSize = 14.sp,
-                            color = Color.Gray
-                        )
-                    }
-
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(
-                            text = profile.userUiState?.following.toString(),
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.White
-                        )
-                        Text(
-                            text = "Following",
-                            fontSize = 14.sp,
-                            color = Color.Gray
-                        )
-                    }
+            when {
+                profile.error != null -> {
+                    ErrorStateComponent(
+                        error = profile.error,
+                        onRetry = {  },
+                        modifier = Modifier.fillMaxSize()
+                    )
                 }
 
-                Spacer(modifier = Modifier.height(32.dp))
+                profile.isLoading && profile.userUiState == null -> {
+                    LoadingStateComponent(
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }
 
-                // Repositories Section
-                Text(
-                    text = "Repositories",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White,
-                    modifier = Modifier.fillMaxWidth()
-                )
+                else -> {
+                    ProfileContentComponent(
+                        profile = profile,
+                        onRepoClick = onRepoClick,
+                        onRetry = {  },
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }
 
-                Spacer(modifier = Modifier.height(16.dp))
-            }
+        }
+    }
+}
+@Composable
+private fun ErrorStateComponent(
+    error: String,
+    onRetry: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier.padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Icon(
+            painter = painterResource(android.R.drawable.ic_dialog_alert),
+            contentDescription = "Error",
+            tint = Color.Red,
+            modifier = Modifier.size(64.dp)
+        )
 
-            items(list.itemCount) { index ->
-                val repository = list[index] ?: return@items
-                RepositoryItem(repository = repository,onRepoClick)
-            }
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Text(
+            text = "Something went wrong",
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color.White
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Text(
+            text = error,
+            fontSize = 14.sp,
+            color = Color.Gray,
+            textAlign = TextAlign.Center
+        )
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Button(
+            onClick = onRetry,
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFF0969da)
+            )
+        ) {
+            Text(
+                text = "Try Again",
+                color = Color.White
+            )
         }
     }
 }
 
 @Composable
-fun RepositoryItem(repository:  GithubRepo, onClick:(String)-> Unit) {
+private fun LoadingStateComponent(
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier.padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        CircularProgressIndicator(
+            color = Color.White,
+            modifier = Modifier.size(48.dp)
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Text(
+            text = "Loading profile...",
+            fontSize = 16.sp,
+            color = Color.Gray
+        )
+    }
+}
+@Composable
+private fun ProfileContentComponent(
+    profile: ProfileUiState,
+    onRepoClick: (String) -> Unit,
+    onRetry: () -> Unit,
+    modifier: Modifier = Modifier
+){
+    val list = profile.reposList.collectAsLazyPagingItems()
+    // Profile Content
+    LazyColumn(
+        modifier = Modifier.padding(top = 16.dp),
+        contentPadding = PaddingValues(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        item {
+            // Profile Avatar
+            AsyncImage(
+                model = profile.userUiState?.avatarUrl ?: "",
+                contentDescription = "${profile.userUiState?.name}'s avatar",
+                modifier = Modifier
+                    .size(120.dp)
+                    .clip(CircleShape)
+                    .background(Color(0xFFF0F0F0)),
+                contentScale = ContentScale.Crop,
+                fallback = painterResource(android.R.drawable.ic_menu_gallery)
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Name
+            Text(
+                text = profile.userUiState?.name.orEmpty(),
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.White
+            )
+
+            Spacer(modifier = Modifier.height(4.dp))
+
+            // Username
+            Text(
+                text = "@${profile.userUiState?.userName}",
+                fontSize = 16.sp,
+                color = Color.Gray
+            )
+
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Followers and Following
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                Column(
+                    modifier = Modifier
+                        .border(width = 1.dp, color = Color.Gray, shape = RoundedCornerShape(8.dp))
+                        .padding(horizontal = 20.dp, vertical = 15.dp),
+
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    Text(
+                        text = profile.userUiState?.followers.toString(),
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
+                    Text(
+                        text = "Followers",
+                        fontSize = 14.sp,
+                        color = Color.Gray
+                    )
+                }
+
+                Column(
+                    modifier = Modifier
+                        .border(width = 1.dp, color = Color.Gray, shape = RoundedCornerShape(8.dp))
+                        .padding(horizontal = 20.dp, vertical = 15.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = profile.userUiState?.following.toString(),
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
+                    Text(
+                        text = "Following",
+                        fontSize = 14.sp,
+                        color = Color.Gray
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            // Repositories Section
+            Text(
+                text = "Repositories",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.White,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+
+        items(list.itemCount) { index ->
+            val repository = list[index] ?: return@items
+            RepositoryItem(repository = repository, onRepoClick)
+        }
+    }
+}
+
+@Composable
+fun RepositoryItem(repository: GithubRepo, onClick: (String) -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable{
-                onClick("")
+            .clickable {
+                onClick(repository.repoUrl)
             }
             .padding(vertical = 8.dp)
     ) {
@@ -171,13 +296,19 @@ fun RepositoryItem(repository:  GithubRepo, onClick:(String)-> Unit) {
 
             Row(
                 verticalAlignment = Alignment.CenterVertically
-            ){
-                Icon(Icons.Filled.Star, contentDescription = "Stars", tint = Color.Yellow)
-
+            ) {
                 Text(
                     text = repository.starCount.toString(),
                     fontSize = 14.sp,
                     color = Color.Gray
+                )
+                Icon(
+                    Icons.Filled.Star,
+                    contentDescription = "Stars",
+                    tint = Color.White,
+                    modifier = Modifier
+                        .padding(start = 4.dp)
+                        .size(15.dp)
                 )
 
             }
@@ -185,36 +316,23 @@ fun RepositoryItem(repository:  GithubRepo, onClick:(String)-> Unit) {
 
         Spacer(modifier = Modifier.height(4.dp))
 
-        Text(
-            text = repository.description?:"",
-            fontSize = 14.sp,
-            color = Color.Gray,
-            maxLines = 2,
-            overflow = TextOverflow.Ellipsis
-        )
+        if (repository.description.orEmpty().isNotEmpty()) {
+            Text(
+                text = repository.description ?: "",
+                fontSize = 14.sp,
+                color = Color(0xFF98acc3),
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.padding(end = 20.dp)
+            )
+        }
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        Tag(text=repository.language)
+        Text(repository.language, style = TextStyle(color = Color(0xFF98acc3)))
 
         Spacer(modifier = Modifier.height(8.dp))
 
         HorizontalDivider(color = Color(0xFFE5E5E5))
-    }
-}
-
-@Composable
-fun Tag(text: String) {
-    Surface(
-        modifier = Modifier.padding(horizontal = 4.dp), // Add spacing around each tag
-        shape = RoundedCornerShape(16.dp),
-        color = MaterialTheme.colorScheme.secondaryContainer,
-        contentColor = MaterialTheme.colorScheme.onSecondaryContainer
-    ) {
-        Text(
-            text = text,
-            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-            style = MaterialTheme.typography.bodyMedium
-        )
     }
 }

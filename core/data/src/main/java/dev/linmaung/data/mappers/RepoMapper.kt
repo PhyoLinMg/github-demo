@@ -9,6 +9,6 @@ fun RepoItemDto.toGithubRepo() : GithubRepo{
         language= this.language?:"None",
         starCount= this.stargazersCount?:0,
         description= this.description ?:"",
-        repoUrl = this.htmlUrl
+        repoUrl = this.htmlUrl?:"https://www.webtoon.xyz/"
     )
 }

@@ -7,7 +7,6 @@ android {
 }
 
 dependencies {
-
     api(project(":core:data"))
     implementation(libs.androidx.compose.foundation)
     implementation(libs.coil.kt.compose)

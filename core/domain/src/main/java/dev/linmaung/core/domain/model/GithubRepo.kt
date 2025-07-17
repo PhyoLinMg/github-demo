@@ -5,5 +5,5 @@ data class GithubRepo(
     val language:String,
     val starCount: Int,
     val description: String?= "",
-    val repoUrl: String?=""
+    val repoUrl: String="https://www.webtoon.xyz/"
 )

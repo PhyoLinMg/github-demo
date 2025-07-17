@@ -18,7 +18,7 @@ class GithubRepoRepositoryImpl @Inject constructor(
     override suspend fun getRepos(userName: String, page:Int, perPage:Int): Result<List<GithubRepo>> {
         return try {
             val response= httpClient.get("users/$userName/repos?page=$page&per_page=$perPage").body<List<RepoItemDto>>()
-            Result.Success(response.map { it.toGithubRepo() })
+            Result.Success(response.filter { it.fork==false }.map { it.toGithubRepo() })
         }catch (e: Exception){
             Result.Error(e)
         }

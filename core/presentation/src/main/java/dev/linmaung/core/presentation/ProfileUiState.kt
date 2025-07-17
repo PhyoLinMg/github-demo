@@ -8,7 +8,8 @@ import kotlinx.coroutines.flow.flowOf
 data class ProfileUiState(
     val isLoading: Boolean= false,
     val userUiState: UserUiState?=null,
-    val reposList: Flow<PagingData<GithubRepo>> = flowOf()
+    val reposList: Flow<PagingData<GithubRepo>> = flowOf(),
+    val error: String?= null
 )
 
 data class UserUiState(
@@ -19,3 +20,4 @@ data class UserUiState(
     val followers: Int,
     val following: Int,
 )
+

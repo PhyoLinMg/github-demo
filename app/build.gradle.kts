@@ -91,9 +91,11 @@ dependencies {
     implementation(libs.androidx.compose.foundation)
 
     implementation(libs.coil.kt.compose)
-    implementation(project(":features:user"))
+
+    implementation(project(":features:home"))
     implementation(project(":features:repo"))
     implementation(project(":core:util"))
+    implementation(project(":core:presentation"))
 
     ksp(libs.hilt.compiler)
 //

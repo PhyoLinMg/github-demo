@@ -12,6 +12,5 @@ android {
 dependencies {
     api(project(":core:domain"))
     api(project(":network"))
-    implementation(libs.kotlinx.serialization.json)
     implementation(libs.androidx.paging.common)
 }

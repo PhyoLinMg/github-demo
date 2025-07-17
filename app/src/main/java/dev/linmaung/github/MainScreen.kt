@@ -1,94 +1,47 @@
 package dev.linmaung.github
 
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.Scaffold
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.navigation.NavHostController
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import dev.linmaung.user.presentation.UserProfileScreen
-import dev.linmaung.user.presentation.UserSearchScreen
+import androidx.navigation.navArgument
+import androidx.navigation.navigation
+import dev.linmaung.repo.presentation.GithubRepoViewModel
+import dev.linmaung.repo.presentation.UserProfileScreen
+import dev.linmaung.user.presentation.HomeScreen
 
-sealed class Screen(val route: String, val title: String, val icon: ImageVector) {
-    object Home : Screen("home", "Home", Icons.Default.Home)
-    object Profile : Screen("profile", "Profile", Icons.Default.Person)
-}
 
-// List of screens to be displayed in the bottom navigation bar
-val items = listOf(
-    Screen.Home,
-    Screen.Profile
-)
 @Composable
 fun MainScreen() {
     // NavController to handle navigation between screens
-    val navController = rememberNavController()
+    val rootNavController = rememberNavController()
 
-    // Scaffold provides a standard layout structure for the app
-    Scaffold(
-        bottomBar = {
-            // BottomNavigation bar composable
-            NavigationBar {
-                // Get the current back stack entry to determine the current route
-                val navBackStackEntry by navController.currentBackStackEntryAsState()
-                val currentRoute = navBackStackEntry?.destination?.route
-
-                // Iterate through the list of screens to create BottomNavigationItems
-                items.forEach { screen ->
-                    NavigationBarItem(
-                        icon = { Icon(screen.icon, contentDescription = screen.title) },
-                        selected = currentRoute == screen.route,
-                        onClick = {
-                            // Navigate to the selected screen
-                            navController.navigate(screen.route) {
-                                // Pop up to the start destination of the graph to
-                                // avoid building up a large stack of destinations
-                                // on the back stack as users select items
-                                popUpTo(navController.graph.startDestinationId) {
-                                    saveState = true
-                                }
-                                // Avoid multiple copies of the same destination when
-                                // reselecting the same item
-                                launchSingleTop = true
-                                // Restore state when reselecting a previously selected item
-                                restoreState = true
-                            }
-                        }
-                    )
-                }
-            }
-        }
-    ) { innerPadding ->
-        // NavigationHost: The container for the navigation graph
-        NavigationHost(navController = navController, innerPadding = innerPadding)
-    }
-}
-@Composable
-fun NavigationHost(navController: NavHostController, innerPadding: PaddingValues) {
     NavHost(
-        navController = navController,
-        startDestination = Screen.Home.route,
-        modifier = Modifier.padding(innerPadding)
-    ) {
-        // Composable for the Home screen
-        composable(Screen.Home.route) {
-            UserSearchScreen()
+        navController= rootNavController,
+        startDestination = "main"
+    ){
+        composable("main"){
+            HomeScreen(
+                onUserClick = { userName->
+                    rootNavController.navigate("user/$userName")
+                },
+            )
         }
-        // Composable for the Profile screen
-        composable(Screen.Profile.route) {
-            UserProfileScreen()
+
+        composable("user/{username}", arguments = listOf(
+            navArgument("username"){ type= NavType.StringType }
+        )) { backstackEntry ->
+            val githubRepoViewModel: GithubRepoViewModel = hiltViewModel(backstackEntry)
+            val username = backstackEntry.arguments?.getString("username") ?: ""
+            val profileUiState by githubRepoViewModel.profileState.collectAsStateWithLifecycle()
+            UserProfileScreen(profileUiState = profileUiState, userName = username) {
+                rootNavController.popBackStack()
+            }
         }
     }
 }

@@ -23,7 +23,7 @@ dependencyResolutionManagement {
 rootProject.name = "github"
 include(":app")
 
-include(":features:user")
+include(":features:home")
 include(":features:repo")
 include(":network")
 include(":core:util")

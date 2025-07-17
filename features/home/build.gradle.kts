@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "dev.linmaung.github.repo"
+    namespace = "dev.linmaung.github.user"
 }
 dependencies{
 
@@ -17,7 +17,6 @@ dependencies{
     implementation(libs.androidx.paging.compose)
     implementation(project(":core:util"))
     implementation(project(":core:presentation"))
-    implementation(project(":core:data"))
     implementation(project(":core:domain"))
     implementation(libs.androidx.browser)
 
