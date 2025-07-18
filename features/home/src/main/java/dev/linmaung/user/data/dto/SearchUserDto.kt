@@ -8,9 +8,9 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class SearchUserDto(
     @SerialName("incomplete_results")
-    val incompleteResults: Boolean,
+    val incompleteResults: Boolean=false,
     @SerialName("items")
     val items: List<UserDto>,
     @SerialName("total_count")
-    val totalCount: Int
+    val totalCount: Int=0
 )

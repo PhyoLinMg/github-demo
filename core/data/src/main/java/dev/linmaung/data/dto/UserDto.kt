@@ -8,43 +8,43 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class UserDto(
     @SerialName("avatar_url")
-    val avatarUrl: String,
+    val avatarUrl: String="",
     @SerialName("events_url")
-    val eventsUrl: String,
+    val eventsUrl: String="",
     @SerialName("followers_url")
-    val followersUrl: String,
+    val followersUrl: String="",
     @SerialName("following_url")
-    val followingUrl: String,
+    val followingUrl: String="",
     @SerialName("gists_url")
-    val gistsUrl: String,
+    val gistsUrl: String="",
     @SerialName("gravatar_id")
-    val gravatarId: String,
+    val gravatarId: String="",
     @SerialName("html_url")
-    val htmlUrl: String,
+    val htmlUrl: String="",
     @SerialName("id")
     val id: Int,
     @SerialName("login")
-    val login: String,
+    val login: String="",
     @SerialName("node_id")
-    val nodeId: String,
+    val nodeId: String="",
     @SerialName("organizations_url")
-    val organizationsUrl: String,
+    val organizationsUrl: String="",
     @SerialName("received_events_url")
-    val receivedEventsUrl: String,
+    val receivedEventsUrl: String="",
     @SerialName("repos_url")
-    val reposUrl: String,
+    val reposUrl: String="",
     @SerialName("site_admin")
-    val siteAdmin: Boolean,
+    val siteAdmin: Boolean=false,
     @SerialName("starred_url")
-    val starredUrl: String,
+    val starredUrl: String="",
     @SerialName("subscriptions_url")
-    val subscriptionsUrl: String,
+    val subscriptionsUrl: String="",
     @SerialName("type")
-    val type: String,
+    val type: String="",
     @SerialName("url")
-    val url: String,
+    val url: String="",
     @SerialName("user_view_type")
-    val userViewType: String,
+    val userViewType: String="",
 
     @SerialName("followers")
     val followers:Int = 0,

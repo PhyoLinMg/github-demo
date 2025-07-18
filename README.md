@@ -5,6 +5,8 @@
 ## Set up Instructions
 
 ## App Architecture and Tech Stack
+
+
 ```mermaid
 graph TD
     app --> features_home

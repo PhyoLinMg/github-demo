@@ -2,10 +2,13 @@ plugins {
     alias(libs.plugins.github.android.feature)
     alias(libs.plugins.github.android.library.compose)
 }
-
+tasks.withType<Test> {
+    useJUnitPlatform()
+}
 android {
     namespace = "dev.linmaung.github.user"
 }
+
 dependencies{
 
     implementation(project(":network"))
@@ -19,5 +22,10 @@ dependencies{
     implementation(project(":core:presentation"))
     implementation(project(":core:domain"))
     implementation(libs.androidx.browser)
+
+   testImplementation(libs.bundles.test)
+    testRuntimeOnly(libs.junit.jupiter.engine)
+
+
 
 }
