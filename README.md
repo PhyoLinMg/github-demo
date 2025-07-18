@@ -85,11 +85,11 @@ graph TD
 
 |Name| Screen  |
 |--|--|
-|Home Screen | ![home screen image](https://raw.githubusercontent.com/PhyoLinMg/github-demo/refs/heads/main/image/home_screen.png =300x) |
-|Profile Screen | ![profile screen image](https://raw.githubusercontent.com/PhyoLinMg/github-demo/refs/heads/main/image/profile_screen.png =300x) |
-|User Profile Screen | ![user profile screen image](https://raw.githubusercontent.com/PhyoLinMg/github-demo/refs/heads/main/image/user_profile.png =300x) |
-|User Search Screen | ![user search screen image](https://raw.githubusercontent.com/PhyoLinMg/github-demo/refs/heads/main/image/user_search.png =300x) |
-|Repo Web View | ![Repo web view image](https://raw.githubusercontent.com/PhyoLinMg/github-demo/refs/heads/main/image/repo_web_view.png =300x) |
+|Home Screen | ![home screen image](https://raw.githubusercontent.com/PhyoLinMg/github-demo/refs/heads/main/image/home_screen.png) |
+|Profile Screen | ![profile screen image](https://raw.githubusercontent.com/PhyoLinMg/github-demo/refs/heads/main/image/profile_screen.png) |
+|User Profile Screen | ![user profile screen image](https://raw.githubusercontent.com/PhyoLinMg/github-demo/refs/heads/main/image/user_profile.png) |
+|User Search Screen | ![user search screen image](https://raw.githubusercontent.com/PhyoLinMg/github-demo/refs/heads/main/image/user_search.png) |
+|Repo Web View | ![Repo web view image](https://raw.githubusercontent.com/PhyoLinMg/github-demo/refs/heads/main/image/repo_web_view.png) |
 
 
 
