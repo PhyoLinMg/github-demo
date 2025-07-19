@@ -13,6 +13,7 @@ import dev.linmaung.core.domain.repository.GithubRepoRepository
 import dev.linmaung.core.presentation.ProfileUiState
 import dev.linmaung.core.presentation.UserUiState
 import dev.linmaung.core.util.Result
+import dev.linmaung.core.util.USERNAME_ARG
 import dev.linmaung.data.source.GithubRepoDataSource
 import dev.linmaung.repo.domain.repository.UserProfileRepository
 import jakarta.inject.Inject
@@ -29,7 +30,7 @@ class GithubRepoViewModel @Inject constructor(
     private val userProfileRepository: UserProfileRepository,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
-    val userName: String = checkNotNull(savedStateHandle["username"])
+    val userName: String = checkNotNull(savedStateHandle[USERNAME_ARG])
 
     private val _profileState = MutableStateFlow(ProfileUiState())
     val profileState: StateFlow<ProfileUiState> = _profileState

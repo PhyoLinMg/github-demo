@@ -19,6 +19,6 @@ dependencies{
     implementation(project(":core:presentation"))
     implementation(project(":core:data"))
     implementation(project(":core:domain"))
-    implementation(libs.androidx.browser)
+
 
 }

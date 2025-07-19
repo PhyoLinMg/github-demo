@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -27,6 +28,7 @@ import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemKey
 import coil.compose.AsyncImage
 import dev.linmaung.core.domain.model.User
 import kotlinx.coroutines.flow.flowOf
@@ -38,10 +40,9 @@ fun UserSearchScreen(
     allUsersPagingData: LazyPagingItems<User>,
     searchUsersPagingData: LazyPagingItems<User>,
     searchQuery: String,
-    setSearchQuery:(String) ->Unit,
+    setSearchQuery: (String) -> Unit,
 ) {
-    val isSearching= searchQuery.isNotBlank()
-
+    val isSearching = searchQuery.isNotBlank()
 
     Column(
         modifier = Modifier
@@ -60,13 +61,12 @@ fun UserSearchScreen(
             placeholder = { Text("Search users or repositories") },
             leadingIcon = {
                 Icon(
-                    imageVector = Icons.Default.Search,
-                    contentDescription = "Search"
+                    imageVector = Icons.Default.Search, contentDescription = "Search"
                 )
             },
             trailingIcon = {
                 if (searchQuery.isNotEmpty()) {
-                    IconButton(onClick = { setSearchQuery("") },) {
+                    IconButton(onClick = { setSearchQuery("") }) {
                         Icon(
                             imageVector = Icons.Default.Clear,
                             contentDescription = "Clear",
@@ -78,41 +78,31 @@ fun UserSearchScreen(
             textStyle = LocalTextStyle.current.copy(color = Color.White),
             shape = RoundedCornerShape(12.dp),
             colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = Color(0xFF007AFF),
-                unfocusedBorderColor = Color(0xFFE5E5E5)
+                focusedBorderColor = Color(0xFF007AFF), unfocusedBorderColor = Color(0xFFE5E5E5)
             )
         )
 
         // User List
         LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(horizontal = 16.dp)
+            modifier = Modifier.fillMaxSize(), contentPadding = PaddingValues(horizontal = 16.dp)
         ) {
             val currentPagingItems = if (isSearching) searchUsersPagingData else allUsersPagingData
-            items(currentPagingItems.itemCount){ index->
-                val user= currentPagingItems[index]
-                if(user!= null) UserItem(user) {
+
+
+            items(
+                currentPagingItems.itemCount, key = currentPagingItems.itemKey { it.id }) { index ->
+                val user = currentPagingItems[index]
+                if (user != null) UserItem(user) {
                     onUserClick(user.name)
                 }
             }
 
-            when{
-                currentPagingItems.loadState.refresh is LoadState.Loading -> {
+            when {
+                currentPagingItems.loadState.refresh is LoadState.Loading || currentPagingItems.loadState.append is LoadState.Loading -> {
                     item(
                     ) {
                         Box(
-                            modifier = Modifier.fillMaxWidth(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            CircularProgressIndicator()
-                        }
-                    }
-                }
-                currentPagingItems.loadState.append is LoadState.Loading -> {
-                    item {
-                        Box(
-                            modifier = Modifier.fillMaxWidth(),
-                            contentAlignment = Alignment.Center
+                            modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center
                         ) {
                             CircularProgressIndicator()
                         }
@@ -124,8 +114,7 @@ fun UserSearchScreen(
                     item {
                         ErrorItem(
                             error = error.error.message ?: "Unknown error",
-                            onRetry = { currentPagingItems.refresh() }
-                        )
+                            onRetry = { currentPagingItems.refresh() })
                     }
                 }
             }
@@ -134,11 +123,12 @@ fun UserSearchScreen(
 
     }
 }
+
 @Composable
 fun ErrorItem(
-    error:String,
-    onRetry:()->Unit,
-){
+    error: String,
+    onRetry: () -> Unit,
+) {
     Column(
         modifier = Modifier.padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -163,23 +153,18 @@ fun ErrorItem(
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-            text = error,
-            fontSize = 14.sp,
-            color = Color.Gray,
-            textAlign = TextAlign.Center
+            text = error, fontSize = 14.sp, color = Color.Gray, textAlign = TextAlign.Center
         )
 
         Spacer(modifier = Modifier.height(24.dp))
 
         Button(
-            onClick = onRetry,
-            colors = ButtonDefaults.buttonColors(
+            onClick = onRetry, colors = ButtonDefaults.buttonColors(
                 containerColor = Color(0xFF0969da)
             )
         ) {
             Text(
-                text = "Try Again",
-                color = Color.White
+                text = "Try Again", color = Color.White
             )
         }
     }
@@ -187,16 +172,13 @@ fun ErrorItem(
 
 @Composable
 fun UserItem(
-    user: User,
-    onClick: () -> Unit
+    user: User, onClick: () -> Unit
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onClick() }
-            .padding(vertical = 16.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
+    Row(modifier = Modifier
+        .fillMaxWidth()
+        .clickable { onClick() }
+        .padding(vertical = 16.dp),
+        verticalAlignment = Alignment.CenterVertically) {
         // Avatar
         AsyncImage(
             model = user.avatarUrl,
@@ -223,16 +205,26 @@ fun UserItem(
 }
 
 
-
 @Preview(showBackground = true)
 @Composable
 fun UserSearchScreenPreview() {
     // Create dummy PagingData for preview
     val dummyUsers = List(10) { index ->
-        User(id = index, name = "User $index", avatarUrl = "https://example.com/avatar.png", followers = 0, following = 1, fullName = "User $index")
+        User(
+            id = index,
+            name = "User $index",
+            avatarUrl = "https://example.com/avatar.png",
+            followers = 0,
+            following = 1,
+            fullName = "User $index"
+        )
     }
     val allUsersPagingData = flowOf(PagingData.from(dummyUsers)).collectAsLazyPagingItems()
-    val searchUsersPagingData = kotlinx.coroutines.flow.flowOf(PagingData.from(dummyUsers.filter { it.name.contains("user 0", ignoreCase = true) })).collectAsLazyPagingItems()
+    val searchUsersPagingData = kotlinx.coroutines.flow.flowOf(PagingData.from(dummyUsers.filter {
+        it.name.contains(
+            "user 0", ignoreCase = true
+        )
+    })).collectAsLazyPagingItems()
 
     UserSearchScreen(
         allUsersPagingData = allUsersPagingData,
@@ -243,7 +235,6 @@ fun UserSearchScreenPreview() {
         },
         onUserClick = { userName ->
             // Handle user click for preview if needed
-        }
-    )
+        })
 }
 

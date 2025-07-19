@@ -77,15 +77,11 @@ fun HomeScreen(
     }) { paddingValues ->
         NavHost(
             navController = navController,
-            startDestination = Screen.Home.route,
-            modifier = Modifier
-                .padding(paddingValues)
-                .padding(bottom = 2.dp)
+            startDestination = Screen.Home.route
         ){
             composable(Screen.Home.route) {
                 val viewModel: UserViewModel = hiltViewModel()
                 val searchQuery by viewModel.searchQuery.collectAsStateWithLifecycle()
-
 
                 val allUsersPagingData = viewModel.allUsersPagingData.collectAsLazyPagingItems()
                 val searchUsersPagingData = viewModel.searchUsersPagingData.collectAsLazyPagingItems()

@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -37,6 +38,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImage
 import dev.linmaung.core.domain.model.GithubRepo
@@ -45,7 +47,6 @@ import dev.linmaung.core.domain.model.GithubRepo
 fun UserProfileComponent(
     profile: ProfileUiState,
     modifier: Modifier = Modifier,
-    onRetry: () -> Unit,
     onRepoClick: (String) -> Unit,
 
 ) {
@@ -268,6 +269,28 @@ private fun ProfileContentComponent(
             val repository = list[index] ?: return@items
             RepositoryItem(repository = repository, onRepoClick)
         }
+        when {
+            list.loadState.refresh is LoadState.Loading || list.loadState.append is LoadState.Loading -> {
+                item(
+                ) {
+                    Box(
+                        modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator()
+                    }
+                }
+            }
+
+            list.loadState.refresh is LoadState.Error -> {
+                val error = list.loadState.refresh as LoadState.Error
+                item {
+                    ErrorItem(
+                        error = error.error.message ?: "Unknown error",
+                        onRetry = { list.refresh() })
+                }
+            }
+        }
+
     }
 }
 

@@ -21,7 +21,6 @@ dependencies{
     implementation(project(":core:util"))
     implementation(project(":core:presentation"))
     implementation(project(":core:domain"))
-    implementation(libs.androidx.browser)
 
    testImplementation(libs.bundles.test)
     testRuntimeOnly(libs.junit.jupiter.engine)

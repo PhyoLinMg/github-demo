@@ -83,13 +83,13 @@ graph TD
 
 ## Screenshots
 
-|Name| Screen  |
-|--|--|
-|Home Screen | ![home screen image](https://raw.githubusercontent.com/PhyoLinMg/github-demo/refs/heads/main/image/home_screen.png) |
-|Profile Screen | ![profile screen image](https://raw.githubusercontent.com/PhyoLinMg/github-demo/refs/heads/main/image/profile_screen.png) |
-|User Profile Screen | ![user profile screen image](https://raw.githubusercontent.com/PhyoLinMg/github-demo/refs/heads/main/image/user_profile.png) |
-|User Search Screen | ![user search screen image](https://raw.githubusercontent.com/PhyoLinMg/github-demo/refs/heads/main/image/user_search.png) |
-|Repo Web View | ![Repo web view image](https://raw.githubusercontent.com/PhyoLinMg/github-demo/refs/heads/main/image/repo_web_view.png) |
+|Name| Screen                                                                                                                              |
+|--|-------------------------------------------------------------------------------------------------------------------------------------|
+|Home Screen | ![home screen image](https://raw.githubusercontent.com/PhyoLinMg/github-demo/refs/heads/main/image/user_screen.jpg)                 |
+|Profile Screen | ![profile screen image](https://raw.githubusercontent.com/PhyoLinMg/github-demo/refs/heads/main/image/profile_screen.jpg)           |
+|User Profile Screen | ![user profile screen image](https://raw.githubusercontent.com/PhyoLinMg/github-demo/refs/heads/main/image/user_profile_screen.jpg) |
+|User Search Screen | ![user search screen image](https://raw.githubusercontent.com/PhyoLinMg/github-demo/refs/heads/main/image/user_search_screen.jpg)   |
+|Repo Web View | ![Repo web view image](https://raw.githubusercontent.com/PhyoLinMg/github-demo/refs/heads/main/image/repo_web_view.jpg)             |
 
 
 
@@ -145,6 +145,7 @@ If given more time, these enhancements could be added:
 
 ### Feature Improvements
 - **Dark mode:** Implement system-aware dark/light theme switching with user preference persistence.
+- **Deep Link Screens**
 - **Setting Page:**
     - Language filtering and sorting preferences for repositories.
     - Search result preferences (users per page, default sort order).
