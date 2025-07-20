@@ -83,21 +83,19 @@ graph TD
 
 ## Screenshots
 
-|Name| Screen                                                                                                                              |
-|--|-------------------------------------------------------------------------------------------------------------------------------------|
-|Home Screen | ![home screen image](https://raw.githubusercontent.com/PhyoLinMg/github-demo/refs/heads/main/image/user_screen.jpg)                 |
-|Profile Screen | ![profile screen image](https://raw.githubusercontent.com/PhyoLinMg/github-demo/refs/heads/main/image/profile_screen.jpg)           |
-|User Profile Screen | ![user profile screen image](https://raw.githubusercontent.com/PhyoLinMg/github-demo/refs/heads/main/image/user_profile_screen.jpg) |
-|User Search Screen | ![user search screen image](https://raw.githubusercontent.com/PhyoLinMg/github-demo/refs/heads/main/image/user_search_screen.jpg)   |
-|Repo Web View | ![Repo web view image](https://raw.githubusercontent.com/PhyoLinMg/github-demo/refs/heads/main/image/repo_web_view.jpg)             |
-
+| Name                | Screen                                                                                                                              |
+|---------------------|-------------------------------------------------------------------------------------------------------------------------------------|
+| Home Screen         | ![home screen image](https://raw.githubusercontent.com/PhyoLinMg/github-demo/refs/heads/main/image/user_screen.jpg)                 |
+| Profile Screen      | ![profile screen image](https://raw.githubusercontent.com/PhyoLinMg/github-demo/refs/heads/main/image/profile_screen.jpg)           |
+| User Profile Screen | ![user profile screen image](https://raw.githubusercontent.com/PhyoLinMg/github-demo/refs/heads/main/image/user_profile_screen.jpg) |
+| User Search Screen  | ![user search screen image](https://raw.githubusercontent.com/PhyoLinMg/github-demo/refs/heads/main/image/user_search_screen.jpg)   |
+| Repo Web View       | ![Repo web view image](https://raw.githubusercontent.com/PhyoLinMg/github-demo/refs/heads/main/image/repo_web_view.jpg)             |
 
 
 ## Design Decisions
 ### Architecture
 
 **MVVM + Clean Architecture**: The application follows a layered architecture approach:
-
 -   **Presentation Layer**: Activities/Fragments (View) + ViewModels for UI state management
 -   **Domain Layer**: Use cases and business logic, independent of frameworks
 -   **Data Layer**: Repository implementations with local and remote data sources
@@ -115,15 +113,12 @@ This separation ensures:
 -   Centralizes error handling and data transformation.
 
 **Singleton Pattern**: Applied to:
-
 -   **API Client**: Ensures single Retrofit instance across the app.
 -   **Database**: Single Room database instance for efficient resource usage.
 -   **Repository Instances**: Prevents multiple instances and ensures data consistency.
 
 ### Error Handling
-
 -   Centralized error handling through sealed classes.
--   Network-specific error mapping (timeout, no internet, API errors).
 -   User-friendly error messages with retry mechanisms.
 
 
@@ -146,6 +141,10 @@ If given more time, these enhancements could be added:
 ### Feature Improvements
 - **Dark mode:** Implement system-aware dark/light theme switching with user preference persistence.
 - **Deep Link Screens**
+    - Enable direct navigation to specific users and repositories via URLs
+        -   `github://user/{username}` - Direct link to user profile
+        -   `github://user/{username}/repo/{repository}` - Direct link to specific repository
+        -  	Web URL support for sharing and bookmarking
 - **Setting Page:**
     - Language filtering and sorting preferences for repositories.
     - Search result preferences (users per page, default sort order).
